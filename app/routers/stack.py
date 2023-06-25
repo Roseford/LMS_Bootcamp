@@ -4,6 +4,7 @@ from ..models import Courses, User
 from .. import database, oauth2
 from ..schemas.stack import CourseOut, Stack, GetAssignment
 from ..schemas.users import ResponseMessage, CreateUser
+from typing import List
 
 
 router = APIRouter(tags=["stack"], prefix="/stack")
@@ -43,7 +44,7 @@ stacks = [
  }
 ]
 
-@router.get("/", response_model=list[Stack])
+@router.get("/", response_model=List[Stack])
 def get_stack_and_courses():
     return stacks
 
@@ -75,7 +76,7 @@ def add_course(course_code: str, db: Session = Depends(database.get_db), current
 
     return {"message": "Course has been added successfully"}
 
-@router.get("/course", response_model=list[CourseOut])
+@router.get("/course", response_model=List[CourseOut])
 def get_current_user_courses(db: Session = Depends(database.get_db), current_user: CreateUser = Depends(oauth2.get_current_user)):
     '''
     get the course_code from the course_code field in each course
@@ -84,7 +85,7 @@ def get_current_user_courses(db: Session = Depends(database.get_db), current_use
 
     return courses
 
-@router.get("/assignment", response_model=list[GetAssignment])
+@router.get("/assignment", response_model=List[GetAssignment])
 def get_assignment():
     assignment = [
         {
