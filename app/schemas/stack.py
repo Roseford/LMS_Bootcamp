@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 class StackCourse(BaseModel):
     title: str
@@ -15,7 +16,7 @@ class CourseOut(StackCourse):
 class Stack(BaseModel):
     name: str
     id: int
-    courses: list[StackCourse]
+    courses: List[StackCourse]
 
 class GetAssignment(BaseModel):
     name: str
