@@ -40,4 +40,4 @@ def change_password(current_user: CreateUser = Depends(oauth2.get_current_user),
 
     db.commit()
 
-    return {"message": "Password updated successfully"}
+    return {"message": "Password updated successfully."}
