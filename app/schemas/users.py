@@ -30,3 +30,7 @@ class Email(BaseModel):
 
 class TokenData(BaseModel):
     id: Optional[str] = None
+
+class SignIn(BaseModel):
+    email: EmailStr
+    password: str
