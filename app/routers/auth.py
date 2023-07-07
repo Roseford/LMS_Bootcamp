@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Depends, Response, HTTPException, Form
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from .. import database, models, utils, oauth2
-from ..schemas.users import UserLogin, Email, ResponseMessage, CreateUser, SignIn
+from ..schemas.users import UserLogin, Email, ResponseMessage, CreateUser, SignIn, CheckPassword
 
 router = APIRouter(tags=["Authentication"], prefix="/login")
 
@@ -25,17 +25,14 @@ def login(user_credentials: SignIn, db: Session = Depends(database.get_db)):
 
 
 @router.post('/change-password', response_model=ResponseMessage)
-def change_password(current_user: CreateUser = Depends(oauth2.get_current_user), old_password: str = Form(), new_password: str = Form(), confirm_password: str = Form(), db: Session = Depends(database.get_db)):
+def change_password(password: CheckPassword, current_user: CreateUser = Depends(oauth2.get_current_user), db: Session = Depends(database.get_db)):
 
-    if new_password != confirm_password:
+    if password.new_password != password.confirm_password:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password mismatch")
 
     user = db.query(models.User).filter(models.User.email == current_user.email).first()
 
-    if not utils.verify_password(old_password, current_user.password):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
-
-    user.password = utils.hash_password(new_password)
+    user.password = utils.hash_password(password.new_password)
 
     db.commit()
 

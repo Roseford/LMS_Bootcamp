@@ -34,3 +34,7 @@ class TokenData(BaseModel):
 class SignIn(BaseModel):
     email: EmailStr
     password: str
+
+class CheckPassword(BaseModel):
+    new_password: str
+    confirm_password: str
